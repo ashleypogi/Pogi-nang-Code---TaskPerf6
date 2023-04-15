@@ -1,0 +1,103 @@
+import java.io.*;
+import java.util.*;
+
+public class TaskPerf6 {
+    // File name for storing user records
+    private static final String RECORDS_FILE = "records.txt";
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            // Display menu options
+            System.out.println("Please select an option:");
+            System.out.println("1. Register");
+            System.out.println("2. Login");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    // Register new user
+                    registerUser(scanner);
+                    break;
+                case 2:
+                    // Login
+                    loginUser(scanner);
+                    break;
+                case 3:
+                    // Exit the program
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        } while (choice != 3);
+        
+        // Close the scanner
+        scanner.close();
+    }
+    
+    private static void registerUser(Scanner scanner) {
+        try {
+            // Open the records file in append mode
+            BufferedWriter writer = new BufferedWriter(new FileWriter(RECORDS_FILE, true));
+            
+            // Ask user for username
+            System.out.print("Enter username: ");
+            String username = scanner.next();
+            
+            // Ask user for password
+            System.out.print("Enter password: ");
+            String password = scanner.next();
+            
+            // Validate username and password (only alphanumeric characters allowed)
+            if (!username.matches("^[a-zA-Z0-9]*$") || !password.matches("^[a-zA-Z0-9]*$")) {
+                System.out.println("Invalid username or password. Please use only alphanumeric characters.");
+                return;
+            }
+            
+            // Write username and password to records file
+            writer.write(username + "," + password);
+            writer.newLine();
+            writer.close();
+            
+            System.out.println("Registration successful!");
+        } catch (IOException e) {
+            System.out.println("Error registering user: " + e.getMessage());
+        }
+    }
+    
+    private static void loginUser(Scanner scanner) {
+        try {
+            // Read records from the records file
+            BufferedReader reader = new BufferedReader(new FileReader(RECORDS_FILE));
+            System.out.print("Enter username: ");
+            String username = scanner.next();
+            System.out.print("Enter password: ");
+            String password = scanner.next();
+            String line;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                // Split the line into username and password
+                String[] parts = line.split(",");
+                if (parts.length == 2 && parts[0].equals(username) && parts[1].equals(password)) {
+                    // Match found, login successful
+                    System.out.println("Successfully logged in!");
+                    found = true;
+                    break;
+                }
+            }
+            reader.close();
+            
+            if (!found) {
+                System.out.println("Incorrect username or password.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error logging in: " + e.getMessage());
+        }
+    }
+}
+/* Ask the user to select between two (2) options Register and Login */
